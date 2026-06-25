@@ -116,8 +116,6 @@ function App() {
 
     const goalVal = parseFloat(targetAmount);
     const { divisorLabel, microTarget } = calculatePaceMetrics(timelineType, goalVal, customYears);
-
-    // If it's an expense tracker, the starting balance is the FULL amount allocated
     const startingBalance = timelineType === 'expense-control' ? goalVal : 0;
 
     const newTracker = {
@@ -144,7 +142,6 @@ function App() {
     setIncomeBase('');
   };
 
-  // Recalculates metrics sequentially from transactions to perfectly handle edits/deletions
   const recalculateTrackerBalances = (tracker) => {
     const isExpenseMode = tracker.type === 'expense-control';
     const baseBalance = isExpenseMode ? tracker.totalGoal : 0;
@@ -152,7 +149,6 @@ function App() {
     let currentBalance = baseBalance;
     let currentMilestone = baseBalance;
 
-    // Process from oldest to newest transaction to build correct running totals
     const reversedTx = [...tracker.transactions].reverse();
     
     reversedTx.forEach((tx) => {
@@ -290,50 +286,62 @@ function App() {
   }
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 antialiased flex flex-col items-center p-4 sm:p-6 select-none ${
+    <div className={`min-h-screen transition-colors duration-300 antialiased flex flex-col items-center p-4 sm:p-6 ${
       theme === 'dark' ? 'bg-zinc-950 text-zinc-100 selection:bg-emerald-500/20' : 'bg-zinc-50 text-zinc-900 selection:bg-emerald-500/10'
     }`}>
       
       {!user ? (
         <div className="w-full max-w-sm my-auto space-y-6 animate-fadeIn">
           <div className="text-center space-y-1">
-            <h1 className={`text-2xl font-black tracking-tight ${theme === 'dark' ? 'text-white' : 'text-zinc-950'}`}>PaceTrack</h1>
-            <p className="text-zinc-500 text-xs font-medium">Track your finances</p>
+            <h1 className={`text-3xl font-black tracking-tight ${theme === 'dark' ? 'text-white' : 'text-zinc-950'}`}>PaceTrack</h1>
+            <p className={`text-xs font-semibold ${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'}`}>Track your finances cleanly</p>
           </div>
 
-          <form onSubmit={handleAuth} className={`border p-6 rounded-2xl shadow-2xl space-y-4 backdrop-blur-md transition-all duration-300 ${
+          <form onSubmit={handleAuth} className={`border p-6 rounded-2xl shadow-2xl space-y-5 backdrop-blur-md transition-all duration-300 ${
             theme === 'dark' ? 'bg-zinc-900/40 border-zinc-900' : 'bg-white border-zinc-200'
           }`}>
-            <h2 className="text-xs font-bold tracking-widest uppercase text-zinc-400">
+            <h2 className={`text-xs font-bold tracking-widest uppercase ${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-500'}`}>
               {isRegistering ? 'Create your account' : 'Welcome back'}
             </h2>
 
-            <div className="space-y-3">
-              <input
-                type="email"
-                placeholder="Your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none transition-all font-medium ${
-                  theme === 'dark' ? 'bg-zinc-900/60 border-zinc-800/80 text-white focus:border-zinc-700 placeholder:text-zinc-600' : 'bg-zinc-100/80 border-zinc-200 text-zinc-900 focus:border-zinc-400 placeholder:text-zinc-400'
-                }`}
-                required
-              />
-              <input
-                type="password"
-                placeholder="Secure password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none transition-all font-medium ${
-                  theme === 'dark' ? 'bg-zinc-900/60 border-zinc-800/80 text-white focus:border-zinc-700 placeholder:text-zinc-600' : 'bg-zinc-100/80 border-zinc-200 text-zinc-900 focus:border-zinc-400 placeholder:text-zinc-400'
-                }`}
-                required
-              />
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="email" className={`block text-xs font-bold uppercase tracking-wider mb-1 ${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'}`}>Email Address</label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="Your email"
+                  autoComplete="username"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className={`w-full border rounded-xl px-4 py-3 text-base focus:outline-none transition-all font-medium ${
+                    theme === 'dark' ? 'bg-zinc-900/60 border-zinc-800/80 text-white focus:border-zinc-600 placeholder:text-zinc-600' : 'bg-zinc-100/80 border-zinc-300 text-zinc-900 focus:border-zinc-400 placeholder:text-zinc-400'
+                  }`}
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="password" className={`block text-xs font-bold uppercase tracking-wider mb-1 ${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'}`}>Password</label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="Secure password"
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className={`w-full border rounded-xl px-4 py-3 text-base focus:outline-none transition-all font-medium ${
+                    theme === 'dark' ? 'bg-zinc-900/60 border-zinc-800/80 text-white focus:border-zinc-600 placeholder:text-zinc-600' : 'bg-zinc-100/80 border-zinc-300 text-zinc-900 focus:border-zinc-400 placeholder:text-zinc-400'
+                  }`}
+                  required
+                />
+              </div>
             </div>
 
             <button
               type="submit"
-              className={`w-full font-bold py-3 rounded-xl text-xs transition-all tracking-wide active:scale-[0.98] hover:opacity-90 shadow-md ${
+              className={`w-full font-bold py-3.5 rounded-xl text-xs transition-all tracking-wide active:scale-[0.98] hover:opacity-90 shadow-md ${
                 theme === 'dark' ? 'bg-white hover:bg-zinc-200 text-black' : 'bg-zinc-950 hover:bg-zinc-800 text-white'
               }`}
             >
@@ -344,7 +352,7 @@ function App() {
               <button
                 type="button"
                 onClick={() => setIsRegistering(!isRegistering)}
-                className="text-xs text-zinc-500 hover:text-zinc-400 transition-colors font-medium underline underline-offset-4"
+                className={`text-xs transition-colors font-semibold underline underline-offset-4 ${theme === 'dark' ? 'text-zinc-400 hover:text-zinc-300' : 'text-zinc-600 hover:text-zinc-950'}`}
               >
                 {isRegistering ? 'Have an account? Log in' : "Don't have an account? Sign up"}
               </button>
@@ -358,27 +366,28 @@ function App() {
             theme === 'dark' ? 'border-zinc-900' : 'border-zinc-200'
           }`}>
             <div>
-              <h1 className={`text-xl font-black tracking-tight ${theme === 'dark' ? 'text-white' : 'text-zinc-950'}`}>PaceTrack</h1>
-              <span className="text-[10px] text-zinc-500 font-mono flex items-center gap-1 mt-0.5">
-                <span className="h-1 w-1 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></span>
+              <h1 className={`text-2xl font-black tracking-tight ${theme === 'dark' ? 'text-white' : 'text-zinc-950'}`}>PaceTrack</h1>
+              <span className={`text-xs font-mono flex items-center gap-1 mt-1 ${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'}`}>
+                <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></span>
                 {user.email}
               </span>
             </div>
             
             <div className="flex items-center gap-2">
               <button
-                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                className={`p-2 rounded-xl border text-xs font-bold transition-all active:scale-90 ${
-                  theme === 'dark' ? 'bg-zinc-900/60 border-zinc-800 text-zinc-400 hover:text-white' : 'bg-white border-zinc-200 text-zinc-600 hover:text-zinc-950'
-                }`}
-              >
-                {theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
-              </button>
+  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+  className={`px-2 sm:px-3 py-2 rounded-xl border text-xs font-bold transition-all active:scale-90 flex items-center justify-center gap-1 shrink-0 ${
+    theme === 'dark' ? 'bg-zinc-900/60 border-zinc-800 text-zinc-300 hover:text-white' : 'bg-white border-zinc-300 text-zinc-700 hover:text-zinc-950'
+  }`}
+>
+  <span>{theme === 'dark' ? '☀️' : '🌙'}</span>
+  <span className="whitespace-nowrap">{theme === 'dark' ? 'Light' : 'Dark'}</span>
+</button>
               
               <button 
                 onClick={() => signOut(auth)}
-                className={`text-[10px] uppercase font-bold tracking-widest border px-3 py-2 rounded-xl transition-all active:scale-95 ${
-                  theme === 'dark' ? 'bg-zinc-900/20 border-zinc-900 text-zinc-500 hover:text-rose-400 hover:border-rose-950' : 'bg-white border-zinc-200 text-zinc-500 hover:text-rose-600 hover:border-rose-200'
+                className={`text-xs uppercase font-bold tracking-widest border px-3 py-2 rounded-xl transition-all active:scale-95 ${
+                  theme === 'dark' ? 'bg-zinc-900/20 border-zinc-800 text-zinc-400 hover:text-rose-400 hover:border-rose-950' : 'bg-white border-zinc-300 text-zinc-600 hover:text-rose-600 hover:border-rose-300'
                 }`}
               >
                 Exit
@@ -389,34 +398,34 @@ function App() {
           <form onSubmit={handleCreateTracker} className={`border p-5 rounded-2xl shadow-xl space-y-4 transition-all ${
             theme === 'dark' ? 'bg-zinc-900/40 border-zinc-900' : 'bg-white border-zinc-200 shadow-zinc-200/60'
           }`}>
-            <h2 className="text-xs font-bold tracking-widest uppercase text-zinc-400">Set up your tracker</h2>
+            <h2 className={`text-xs font-bold tracking-widest uppercase ${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-500'}`}>Set up your tracker</h2>
             
-            <div className="space-y-3.5">
+            <div className="space-y-4">
               <input
                 type="text"
                 placeholder="Goal name (e.g., Household Savings, New Laptop)"
                 value={trackerName}
                 onChange={(e) => setTrackerName(e.target.value)}
-                className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none transition-all font-medium ${
-                  theme === 'dark' ? 'bg-zinc-900/60 border-zinc-800/80 text-white focus:border-zinc-700 placeholder:text-zinc-600' : 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-zinc-400 placeholder:text-zinc-400'
+                className={`w-full border rounded-xl px-4 py-3 text-base focus:outline-none transition-all font-medium ${
+                  theme === 'dark' ? 'bg-zinc-900/60 border-zinc-800/80 text-white focus:border-zinc-600 placeholder:text-zinc-600' : 'bg-zinc-50 border-zinc-300 text-zinc-900 focus:border-zinc-400 placeholder:text-zinc-400'
                 }`}
                 required
               />
 
               <div>
-                <label className="block text-[9px] font-bold text-zinc-500 uppercase tracking-widest mb-1.5 px-0.5">Tracking schedule</label>
-                <div className={`grid grid-cols-5 gap-1 p-1 rounded-xl border ${
-                  theme === 'dark' ? 'bg-zinc-900/80 border-zinc-800/60' : 'bg-zinc-100 border-zinc-200/60'
+                <label className={`block text-xs font-bold uppercase tracking-widest mb-1.5 px-0.5 ${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'}`}>Tracking schedule</label>
+                <div className={`grid grid-cols-3 gap-1 p-1 rounded-xl border ${
+                  theme === 'dark' ? 'bg-zinc-900/80 border-zinc-800/60' : 'bg-zinc-100 border-zinc-300'
                 }`}>
                   {['weekly', 'monthly', 'yearly', 'multi-year', 'expense-control'].map((mode) => (
                     <button
                       key={mode}
                       type="button"
                       onClick={() => setTimelineType(mode)}
-                      className={`py-2 text-[9px] font-bold rounded-lg transition-all text-center ${
+                      className={`py-2 text-[10px] sm:text-xs font-bold rounded-lg transition-all text-center ${
                         timelineType === mode 
                           ? (theme === 'dark' ? 'bg-zinc-800 text-white shadow-sm font-black' : 'bg-white text-zinc-950 shadow-sm font-black') 
-                          : 'text-zinc-500 hover:text-zinc-400'
+                          : (theme === 'dark' ? 'text-zinc-400 hover:text-zinc-300' : 'text-zinc-600 hover:text-zinc-900')
                       }`}
                     >
                       {mode === 'expense-control' ? 'expense' : mode.replace('-', ' ')}
@@ -426,46 +435,46 @@ function App() {
               </div>
 
               {timelineType === 'multi-year' && (
-                <div className="bg-black/10 p-3 rounded-xl border border-zinc-800/40 flex items-center justify-between animate-fadeIn">
+                <div className={`p-3 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-2 animate-fadeIn ${theme === 'dark' ? 'bg-black/10 border-zinc-800' : 'bg-zinc-100 border-zinc-200'}`}>
                   <div>
-                    <label className="block text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Time scale</label>
-                    <span className="text-xs text-zinc-400 font-medium">Set tracking duration up to 10 years.</span>
+                    <label className={`block text-xs font-bold uppercase tracking-widest ${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'}`}>Time scale</label>
+                    <span className={`text-xs font-medium ${theme === 'dark' ? 'text-zinc-500' : 'text-zinc-600'}`}>Set tracking duration up to 10 years.</span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 self-end sm:self-auto">
                     <input 
                       type="range" min="2" max="10" 
                       value={customYears} 
                       onChange={(e) => setCustomYears(e.target.value)}
-                      className="accent-white w-20 cursor-pointer"
+                      className="accent-emerald-500 w-24 cursor-pointer"
                     />
-                    <span className="text-xs font-mono font-bold bg-zinc-800 px-2 py-0.5 rounded text-white">{customYears} years</span>
+                    <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded ${theme === 'dark' ? 'bg-zinc-800 text-white' : 'bg-zinc-200 text-zinc-900'}`}>{customYears} years</span>
                   </div>
                 </div>
               )}
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[9px] font-bold text-zinc-500 uppercase tracking-widest mb-1 px-0.5">Start date</label>
+                  <label className={`block text-xs font-bold uppercase tracking-widest mb-1 px-0.5 ${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'}`}>Start date</label>
                   <input
                     type="date"
                     value={startPeriod}
                     onChange={(e) => setStartPeriod(e.target.value)}
-                    className={`w-full border rounded-xl px-3 py-2.5 text-xs focus:outline-none font-mono ${
-                      theme === 'dark' ? 'bg-zinc-900/60 border-zinc-800/80 text-white focus:border-zinc-700' : 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-zinc-400'
+                    className={`w-full border rounded-xl px-3 py-2.5 text-base focus:outline-none font-mono ${
+                      theme === 'dark' ? 'bg-zinc-900/60 border-zinc-800/80 text-white focus:border-zinc-600' : 'bg-zinc-50 border-zinc-300 text-zinc-900 focus:border-zinc-400'
                     }`}
                   />
                 </div>
                 <div>
-                  <label className="block text-[9px] font-bold text-zinc-500 uppercase tracking-widest mb-1 px-0.5">
-                    {timelineType === 'expense-control' ? 'Monthly budget limit' : 'Target savings goal'}
+                  <label className={`block text-xs font-bold uppercase tracking-widest mb-1 px-0.5 ${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'}`}>
+                    {timelineType === 'expense-control' ? 'Monthly Budget' : 'Savings Goal'}
                   </label>
                   <input
                     type="number"
                     placeholder={timelineType === 'expense-control' ? 'e.g., 40000' : 'e.g., 500000'}
                     value={targetAmount}
                     onChange={(e) => setTargetAmount(e.target.value)}
-                    className={`w-full border rounded-xl px-3 py-2.5 text-xs focus:outline-none font-mono ${
-                      theme === 'dark' ? 'bg-zinc-900/60 border-zinc-800/80 text-white focus:border-zinc-700 placeholder:text-zinc-700' : 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-zinc-400 placeholder:text-zinc-300'
+                    className={`w-full border rounded-xl px-3 py-2.5 text-base focus:outline-none font-mono ${
+                      theme === 'dark' ? 'bg-zinc-900/60 border-zinc-800/80 text-white focus:border-zinc-600 placeholder:text-zinc-700' : 'bg-zinc-50 border-zinc-300 text-zinc-900 focus:border-zinc-400 placeholder:text-zinc-400'
                     }`}
                     required
                   />
@@ -474,14 +483,14 @@ function App() {
 
               {timelineType !== 'expense-control' && (
                 <div className="space-y-1">
-                  <label className="block text-[9px] font-bold text-zinc-500 uppercase tracking-widest px-0.5">Monthly salary or income (Optional)</label>
+                  <label className={`block text-xs font-bold uppercase tracking-widest px-0.5 ${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'}`}>Monthly salary or income (Optional)</label>
                   <input
                     type="number"
                     placeholder="e.g., 50000 BDT"
                     value={incomeBase}
                     onChange={(e) => setIncomeBase(e.target.value)}
-                    className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none transition-all font-mono ${
-                      theme === 'dark' ? 'bg-zinc-900/60 border-zinc-800/80 text-white focus:border-zinc-700 placeholder:text-zinc-600' : 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-zinc-400 placeholder:text-zinc-300'
+                    className={`w-full border rounded-xl px-4 py-3 text-base focus:outline-none transition-all font-mono ${
+                      theme === 'dark' ? 'bg-zinc-900/60 border-zinc-800/80 text-white focus:border-zinc-600 placeholder:text-zinc-700' : 'bg-zinc-50 border-zinc-300 text-zinc-900 focus:border-zinc-400 placeholder:text-zinc-400'
                     }`}
                   />
                 </div>
@@ -489,7 +498,7 @@ function App() {
 
               <button
                 type="submit"
-                className={`w-full font-bold py-3 rounded-xl text-xs transition-all tracking-wide active:scale-[0.98] hover:opacity-90 shadow-md ${
+                className={`w-full font-bold py-3.5 rounded-xl text-xs transition-all tracking-wide active:scale-[0.98] hover:opacity-90 shadow-md ${
                   theme === 'dark' ? 'bg-white hover:bg-zinc-200 text-black' : 'bg-zinc-950 hover:bg-zinc-800 text-white'
                 }`}
               >
@@ -500,18 +509,18 @@ function App() {
 
           {targetAmount > 0 && timelineType !== 'expense-control' && (
             <div className={`border p-4 rounded-xl flex justify-between items-center animate-fadeIn ${
-              theme === 'dark' ? 'bg-zinc-900/20 border-dashed border-zinc-800/80' : 'bg-zinc-100/50 border-dashed border-zinc-200'
+              theme === 'dark' ? 'bg-zinc-900/20 border-dashed border-zinc-800/80' : 'bg-zinc-100/50 border-dashed border-zinc-300'
             }`}>
               <div>
-                <div className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Required breakdown goal</div>
+                <div className={`text-xs font-bold uppercase tracking-widest ${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'}`}>Required breakdown goal</div>
                 <div className={`text-lg font-black font-mono ${theme === 'dark' ? 'text-white' : 'text-zinc-950'}`}>
                   {parseInt(currentPreview.microTarget).toLocaleString()} BDT
-                  <span className="text-[10px] font-normal text-zinc-500">/{currentPreview.divisorLabel}</span>
+                  <span className={`text-xs font-normal ${theme === 'dark' ? 'text-zinc-500' : 'text-zinc-500'}`}>/{currentPreview.divisorLabel}</span>
                 </div>
               </div>
               {incomeNum > 0 && (
                 <div className="text-right">
-                  <div className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Budget strain</div>
+                  <div className={`text-xs font-bold uppercase tracking-widest ${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'}`}>Budget strain</div>
                   <div className="text-sm font-bold text-emerald-500 font-mono">{incomePercentage}%</div>
                 </div>
               )}
@@ -520,15 +529,15 @@ function App() {
 
           <div className="space-y-4">
             <div className="flex justify-between items-center px-0.5">
-              <h2 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Active budgets</h2>
-              <span className="text-xs text-zinc-500 font-mono">Total trackers: {trackers.length}</span>
+              <h2 className={`text-xs font-bold uppercase tracking-widest ${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'}`}>Active budgets</h2>
+              <span className={`text-xs font-mono font-semibold ${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'}`}>Total trackers: {trackers.length}</span>
             </div>
             
             {trackers.length === 0 ? (
               <div className={`text-center py-10 border border-dashed rounded-2xl ${
-                theme === 'dark' ? 'bg-zinc-900/10 border-zinc-900' : 'bg-zinc-100/20 border-zinc-200'
+                theme === 'dark' ? 'bg-zinc-900/10 border-zinc-800' : 'bg-zinc-100/20 border-zinc-300'
               }`}>
-                <p className="text-xs text-zinc-400 tracking-wide">No active tracking schedules. Create your first one above!</p>
+                <p className={`text-xs tracking-wide px-4 ${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'}`}>No active tracking schedules. Create your first one above!</p>
               </div>
             ) : (
               <div className="space-y-5">
@@ -557,13 +566,11 @@ function ActiveTrackerCard({ tracker, theme, onLog, onEditTx, onDeleteTx, onDele
   const [logAmount, setLogAmount] = useState('');
   const [logReason, setLogReason] = useState('');
   
-  // States to facilitate row editing features
   const [editingTxId, setEditingTxId] = useState(null);
   const [editAmount, setEditAmount] = useState('');
   const [editReason, setEditReason] = useState('');
 
   const isExpenseMode = tracker.type === 'expense-control';
-
   const totalGoal = tracker.totalGoal || 0;
   const savingsBalance = tracker.savingsBalance !== undefined ? tracker.savingsBalance : 0;
   const microTarget = tracker.microTarget || 0;
@@ -593,51 +600,50 @@ function ActiveTrackerCard({ tracker, theme, onLog, onEditTx, onDeleteTx, onDele
   const currentMilestonePercent = microTarget > 0 ? Math.max(0, ((tracker.currentMilestoneSaved / microTarget) * 100)) : 0;
 
   return (
-    <div className={`border p-5 rounded-2xl shadow-xl space-y-4 backdrop-blur-md transition-all duration-300 transform hover:-translate-y-0.5 animate-fadeIn relative group ${
-      theme === 'dark' ? 'bg-zinc-900/60 border-zinc-800/80 hover:border-zinc-700/60 shadow-black/40' : 'bg-white border-zinc-200/80 hover:border-zinc-300 shadow-zinc-200/40'
+    <div className={`border p-5 rounded-2xl shadow-xl space-y-4 backdrop-blur-md transition-all duration-300 relative group ${
+      theme === 'dark' ? 'bg-zinc-900/60 border-zinc-800/80 hover:border-zinc-700/60 shadow-black/40' : 'bg-white border-zinc-300 hover:border-zinc-400 shadow-zinc-200/40'
     }`}>
       
-      {/* Absolute Tracker Container Delete Button */}
       <button 
         onClick={() => onDeleteTracker(tracker.id)}
-        className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 text-zinc-400 hover:text-rose-500 transition-opacity duration-200 text-xs p-1"
+        className="absolute top-4 right-4 text-zinc-400 hover:text-rose-500 transition-colors text-xs p-1 block sm:opacity-0 sm:group-hover:opacity-100"
         title="Remove entire budget tracker"
       >
         🗑️
       </button>
 
-      <div className="flex justify-between items-start pr-4">
+      <div className="flex justify-between items-start pr-6">
         <div>
-          <span className={`text-[8px] uppercase font-mono tracking-widest px-2 py-0.5 rounded font-bold ${
+          <span className={`text-xs uppercase font-mono tracking-widest px-2 py-0.5 rounded font-bold ${
             isExpenseMode 
-              ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' 
-              : (theme === 'dark' ? 'bg-zinc-800 text-zinc-400' : 'bg-zinc-100 text-zinc-500')
+              ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20' 
+              : (theme === 'dark' ? 'bg-zinc-800 text-zinc-300' : 'bg-zinc-100 text-zinc-700')
           }`}>
             {isExpenseMode ? 'expense control' : tracker.type === 'multi-year' ? `${tracker.yearsScale}-year schedule` : `${tracker.type} schedule`}
           </span>
-          <h3 className={`text-base font-black mt-1.5 tracking-tight ${theme === 'dark' ? 'text-white' : 'text-zinc-950'}`}>{tracker.name}</h3>
+          <h3 className={`text-base font-black mt-2 tracking-tight ${theme === 'dark' ? 'text-white' : 'text-zinc-950'}`}>{tracker.name}</h3>
         </div>
         <div className="text-right">
-          <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">
+          <div className={`text-xs font-bold uppercase tracking-wider ${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'}`}>
             {isExpenseMode ? 'starting budget' : 'total goal'}
           </div>
           <div className={`text-sm font-black font-mono ${theme === 'dark' ? 'text-white' : 'text-zinc-950'}`}>{totalGoal.toLocaleString()} BDT</div>
         </div>
       </div>
 
-      <div className={`grid grid-cols-2 gap-4 border-y py-3.5 ${theme === 'dark' ? 'border-zinc-900' : 'border-zinc-100'}`}>
+      <div className={`grid grid-cols-2 gap-4 border-y py-3.5 ${theme === 'dark' ? 'border-zinc-900' : 'border-zinc-200'}`}>
         <div>
-          <div className="text-[9px] text-zinc-400 uppercase tracking-widest font-bold mb-0.5">
+          <div className={`text-xs uppercase tracking-widest font-bold mb-0.5 ${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'}`}>
             {isExpenseMode ? 'funds remaining' : 'total money saved'}
           </div>
           <div className={`text-lg font-black font-mono ${
             isExpenseMode && savingsBalance < totalGoal * 0.2 ? 'text-rose-500 animate-pulse' : (theme === 'dark' ? 'text-white' : 'text-zinc-950')
           }`}>
-            {savingsBalance.toLocaleString()} <span className="text-xs font-normal text-zinc-500">BDT</span>
+            {savingsBalance.toLocaleString()} <span className={`text-xs font-normal ${theme === 'dark' ? 'text-zinc-500' : 'text-zinc-500'}`}>BDT</span>
           </div>
         </div>
         <div className="text-right">
-          <div className="text-[9px] text-zinc-400 uppercase tracking-widest font-bold mb-0.5">
+          <div className={`text-xs uppercase tracking-widest font-bold mb-0.5 ${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'}`}>
             {isExpenseMode ? 'total spent' : `target amount / ${targetPeriodLabel}`}
           </div>
           <div className={`text-sm font-black font-mono ${isExpenseMode ? 'text-rose-500' : (theme === 'dark' ? 'text-zinc-300' : 'text-zinc-700')}`}>
@@ -646,12 +652,12 @@ function ActiveTrackerCard({ tracker, theme, onLog, onEditTx, onDeleteTx, onDele
         </div>
       </div>
 
-      <div className={`space-y-3.5 p-4 rounded-xl border ${theme === 'dark' ? 'bg-black/40 border-zinc-900/60' : 'bg-zinc-50/50 border-zinc-100'}`}>
+      <div className={`space-y-3.5 p-4 rounded-xl border ${theme === 'dark' ? 'bg-black/40 border-zinc-900/60' : 'bg-zinc-50/50 border-zinc-200'}`}>
         {isExpenseMode ? (
           <div>
-            <div className="flex justify-between text-[11px] mb-1.5 font-semibold">
-              <span className="text-zinc-400">Budget pool health</span>
-              <span className={`font-mono ${savingsBalance < totalGoal * 0.2 ? 'text-rose-500' : 'text-emerald-500'}`}>{budgetRemainingPercent.toFixed(1)}% remaining</span>
+            <div className="flex justify-between text-xs mb-1.5 font-semibold">
+              <span className={theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'}>Budget pool health</span>
+              <span className={`font-mono ${savingsBalance < totalGoal * 0.2 ? 'text-rose-600' : 'text-emerald-600'}`}>{budgetRemainingPercent.toFixed(1)}% remaining</span>
             </div>
             <div className={`w-full h-2 rounded-full overflow-hidden ${theme === 'dark' ? 'bg-zinc-900' : 'bg-zinc-200'}`}>
               <div 
@@ -665,8 +671,8 @@ function ActiveTrackerCard({ tracker, theme, onLog, onEditTx, onDeleteTx, onDele
         ) : (
           <>
             <div>
-              <div className="flex justify-between text-[11px] mb-1.5 font-semibold">
-                <span className="text-zinc-400">Current schedule progress</span>
+              <div className="flex justify-between text-xs mb-1.5 font-semibold">
+                <span className={theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'}>Current schedule progress</span>
                 <span className={`font-mono ${theme === 'dark' ? 'text-white' : 'text-zinc-950'}`}>{currentMilestonePercent.toFixed(1)}%</span>
               </div>
               <div className={`w-full h-2 rounded-full overflow-hidden ${theme === 'dark' ? 'bg-zinc-900' : 'bg-zinc-200'}`}>
@@ -680,9 +686,9 @@ function ActiveTrackerCard({ tracker, theme, onLog, onEditTx, onDeleteTx, onDele
             </div>
 
             <div>
-              <div className="flex justify-between text-[11px] mb-1.5 font-semibold">
-                <span className="text-zinc-400">Overall tracking progress</span>
-                <span className="font-mono text-zinc-400">{velocityGoalPercent.toFixed(1)}%</span>
+              <div className="flex justify-between text-xs mb-1.5 font-semibold">
+                <span className={theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'}>Overall tracking progress</span>
+                <span className={`font-mono ${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'}`}>{velocityGoalPercent.toFixed(1)}%</span>
               </div>
               <div className={`w-full h-1.5 rounded-full overflow-hidden ${theme === 'dark' ? 'bg-zinc-900' : 'bg-zinc-200'}`}>
                 <div 
@@ -695,17 +701,16 @@ function ActiveTrackerCard({ tracker, theme, onLog, onEditTx, onDeleteTx, onDele
         )}
       </div>
 
-      {/* Dynamic Alerts */}
       {isExpenseMode ? (
-        <div className={`text-[11px] py-2 px-3 rounded-xl flex items-center justify-between border font-bold animate-fadeIn ${
+        <div className={`text-xs py-2.5 px-3 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2 border font-bold animate-fadeIn ${
           savingsBalance === 0 
-            ? 'bg-rose-500/10 border-rose-500/20 text-rose-500'
+            ? 'bg-rose-500/10 border-rose-500/20 text-rose-600 dark:text-rose-400'
             : savingsBalance < totalGoal * 0.2 
-            ? 'bg-amber-500/5 border-amber-500/20 text-amber-500' 
-            : 'bg-emerald-500/5 border-emerald-500/20 text-emerald-500'
+            ? 'bg-amber-500/5 border-amber-500/20 text-amber-600 dark:text-amber-400' 
+            : 'bg-emerald-500/5 border-emerald-500/20 text-emerald-600 dark:text-emerald-400'
         }`}>
           <div className="flex items-center gap-1.5">
-            <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${savingsBalance < totalGoal * 0.2 ? 'bg-rose-500 animate-pulse' : 'bg-emerald-500'}`}></span>
+            <span className={`h-2 w-2 rounded-full shrink-0 ${savingsBalance < totalGoal * 0.2 ? 'bg-rose-500 animate-pulse' : 'bg-emerald-500'}`}></span>
             {savingsBalance === 0 
               ? 'Alert: Running budget empty. Try to slow down expenses.'
               : savingsBalance < totalGoal * 0.2
@@ -715,24 +720,23 @@ function ActiveTrackerCard({ tracker, theme, onLog, onEditTx, onDeleteTx, onDele
           </div>
           <button
             onClick={() => onSettle(tracker.id)}
-            className={`text-[9px] uppercase tracking-wider font-extrabold px-2 py-0.5 rounded transition-all active:scale-90 ${
-              theme === 'dark' ? 'bg-zinc-800 hover:bg-zinc-700 text-white' : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-900'
+            className={`text-[10px] uppercase tracking-wider font-extrabold px-2.5 py-1 rounded transition-all active:scale-90 align-middle self-end sm:self-auto ${
+              theme === 'dark' ? 'bg-zinc-800 hover:bg-zinc-700 text-white' : 'bg-zinc-200 hover:bg-zinc-300 text-zinc-900'
             }`}
-            title="Renew pool allocation for next schedule cycle"
           >
             Next month 🔄
           </button>
         </div>
       ) : (
         tracker.currentMilestoneSaved >= microTarget && (
-          <div className="text-[11px] py-2 px-3 rounded-xl flex items-center justify-between border font-bold animate-fadeIn bg-emerald-500/5 border-emerald-500/20 text-emerald-500">
+          <div className="text-xs py-2.5 px-3 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2 border font-bold animate-fadeIn bg-emerald-500/5 border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
             <div className="flex items-center gap-1.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
               Periodic milestone goal achieved!
             </div>
             <button
               onClick={() => onSettle(tracker.id)}
-              className={`text-[9px] uppercase tracking-wider font-extrabold px-2 py-0.5 rounded transition-all active:scale-90 ${
+              className={`text-[10px] uppercase tracking-wider font-extrabold px-2.5 py-1 rounded transition-all active:scale-90 self-end sm:self-auto ${
                 theme === 'dark' ? 'bg-emerald-950 hover:bg-emerald-900 text-emerald-400' : 'bg-emerald-100 hover:bg-emerald-200 text-emerald-700'
               }`}
             >
@@ -742,34 +746,33 @@ function ActiveTrackerCard({ tracker, theme, onLog, onEditTx, onDeleteTx, onDele
         )
       )}
 
-      {/* Transaction Entry Panel */}
       <div className={`space-y-2 p-2.5 rounded-xl border ${theme === 'dark' ? 'bg-black/20 border-zinc-900' : 'bg-zinc-50 border-zinc-200'}`}>
         <div className="grid grid-cols-2 gap-2">
           <input
             type="number"
-            placeholder="Amount in BDT"
+            placeholder="Amount (BDT)"
             value={logAmount}
             onChange={(e) => setLogAmount(e.target.value)}
-            className={`border rounded-lg px-3 py-2 text-xs focus:outline-none font-mono transition-colors ${
-              theme === 'dark' ? 'bg-zinc-950 border-zinc-900 focus:bg-zinc-900 focus:border-zinc-800 text-white placeholder:text-zinc-600' : 'bg-white border-zinc-200 focus:border-zinc-300 text-zinc-900 placeholder:text-zinc-400'
+            className={`border rounded-lg px-3 py-2.5 text-base focus:outline-none font-mono transition-colors ${
+              theme === 'dark' ? 'bg-zinc-950 border-zinc-900 focus:bg-zinc-900 text-white placeholder:text-zinc-600' : 'bg-white border-zinc-300 text-zinc-900 placeholder:text-zinc-400'
             }`}
           />
           <input
             type="text"
-            placeholder="Note (e.g., Groceries)"
+            placeholder="Note (e.g., Rent)"
             value={logReason}
             onChange={(e) => setLogReason(e.target.value)}
-            className={`border rounded-lg px-3 py-2 text-xs focus:outline-none transition-colors ${
-              theme === 'dark' ? 'bg-zinc-950 border-zinc-900 focus:bg-zinc-900 focus:border-zinc-800 text-white placeholder:text-zinc-600' : 'bg-white border-zinc-200 focus:border-zinc-300 text-zinc-900 placeholder:text-zinc-400'
+            className={`border rounded-lg px-3 py-2.5 text-base focus:outline-none transition-colors ${
+              theme === 'dark' ? 'bg-zinc-950 border-zinc-900 focus:bg-zinc-900 text-white placeholder:text-zinc-600' : 'bg-white border-zinc-300 text-zinc-900 placeholder:text-zinc-400'
             }`}
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <button
             type="button"
             onClick={() => submitLog('deposit')}
-            className={`font-bold py-2 rounded-lg text-[11px] transition-all active:scale-[0.97] shadow-sm ${
+            className={`font-bold py-2.5 rounded-lg text-xs transition-all tracking-wide active:scale-[0.97] shadow-sm ${
               theme === 'dark' ? 'bg-zinc-100 hover:bg-white text-black' : 'bg-zinc-950 hover:bg-zinc-900 text-white'
             }`}
           >
@@ -778,7 +781,7 @@ function ActiveTrackerCard({ tracker, theme, onLog, onEditTx, onDeleteTx, onDele
           <button
             type="button"
             onClick={() => submitLog('expense')}
-            className="font-bold py-2 rounded-lg text-[11px] transition-all border bg-rose-500/10 border-rose-500/20 text-rose-500 hover:bg-rose-500/20 active:scale-[0.97]"
+            className="font-bold py-2.5 rounded-lg text-xs transition-all border bg-rose-500/10 border-rose-500/20 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 active:scale-[0.97]"
           >
             {isExpenseMode ? 'Log an expense' : 'Log a withdrawal'}
           </button>
@@ -786,84 +789,81 @@ function ActiveTrackerCard({ tracker, theme, onLog, onEditTx, onDeleteTx, onDele
       </div>
 
       {transactions.length > 0 && (
-        <div className="pt-1 space-y-1">
-          <span className="text-[9px] uppercase tracking-wider text-zinc-500 font-bold px-0.5">History logs</span>
-          <div className="max-h-36 overflow-y-auto space-y-1.5 pr-0.5 custom-scrollbar">
+        <div className="pt-2 space-y-1.5">
+          <span className={`text-xs uppercase tracking-wider font-bold px-0.5 ${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'}`}>History logs</span>
+          <div className="max-h-40 overflow-y-auto space-y-1.5 pr-0.5 custom-scrollbar">
             {transactions.map((tx) => (
-              <div key={tx.id || Math.random().toString()} className={`border p-2 rounded-lg transition-all ${
-                theme === 'dark' ? 'bg-black/40 border-zinc-900/60' : 'bg-zinc-50/60 border-zinc-100/80'
+              <div key={tx.id || Math.random().toString()} className={`border p-2.5 rounded-lg transition-all ${
+                theme === 'dark' ? 'bg-black/40 border-zinc-900/60' : 'bg-zinc-50/60 border-zinc-200'
               }`}>
                 {editingTxId === tx.id ? (
-                  /* Inline Edit Mode Interface Row */
                   <div className="space-y-2 animate-fadeIn">
                     <div className="grid grid-cols-2 gap-1.5">
                       <input 
                         type="number" 
                         value={editAmount} 
                         onChange={(e) => setEditAmount(e.target.value)}
-                        className={`border rounded px-2 py-1 text-xs font-mono ${theme === 'dark' ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-300'}`}
+                        className={`border rounded px-2 py-1.5 text-base font-mono ${theme === 'dark' ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-300'}`}
                       />
                       <input 
                         type="text" 
                         value={editReason} 
                         onChange={(e) => setEditReason(e.target.value)}
-                        className={`border rounded px-2 py-1 text-xs ${theme === 'dark' ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-300'}`}
+                        className={`border rounded px-2 py-1.5 text-base ${theme === 'dark' ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-300'}`}
                       />
                     </div>
-                    <div className="flex justify-end gap-1.5 text-[10px]">
+                    <div className="flex justify-end gap-1.5 text-xs">
                       <button 
                         onClick={() => setEditingTxId(null)} 
-                        className="px-2 py-0.5 rounded border border-zinc-500 text-zinc-400 hover:text-zinc-300"
+                        className="px-2.5 py-1 rounded border border-zinc-500 text-zinc-500 dark:text-zinc-400"
                       >
                         Cancel
                       </button>
                       <button 
                         onClick={() => saveEdit(tx.id)} 
-                        className="px-2 py-0.5 rounded bg-emerald-600 text-white hover:bg-emerald-500"
+                        className="px-2.5 py-1 rounded bg-emerald-600 text-white hover:bg-emerald-500 font-bold"
                       >
                         Save
                       </button>
                     </div>
                   </div>
                 ) : (
-                  /* Standard Log Display Row with Action Badges */
-                  <div className="flex justify-between items-center text-[11px] font-mono group/row">
-                    <div className="flex items-center gap-2 max-w-[65%]">
-                      <span className={`text-[8px] font-extrabold px-1 rounded shrink-0 ${
+                  <div className="flex justify-between items-center text-xs sm:text-sm font-mono group/row gap-1">
+                    <div className="flex items-center gap-2 max-w-[60%] overflow-hidden">
+                      <span className={`text-[9px] font-extrabold px-1 py-0.5 rounded shrink-0 ${
                         tx.type === 'deposit' 
-                          ? 'bg-emerald-950 text-emerald-400' 
+                          ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' 
                           : tx.type === 'settlement' 
-                          ? 'bg-blue-950 text-blue-400' 
-                          : 'bg-rose-950 text-rose-400'
+                          ? 'bg-blue-950 text-blue-400 border border-blue-800' 
+                          : 'bg-rose-950 text-rose-400 border border-rose-800'
                       }`}>
                         {tx.type === 'deposit' ? 'IN' : tx.type === 'settlement' ? 'RESET' : 'OUT'}
                       </span>
-                      <span className={`truncate ${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'}`} title={tx.reason}>
+                      <span className={`truncate ${theme === 'dark' ? 'text-zinc-300' : 'text-zinc-800'}`} title={tx.reason}>
                         {tx.reason || ''}
                       </span>
                     </div>
                     
-                    <div className="text-right shrink-0 flex items-center gap-2">
+                    <div className="text-right shrink-0 flex items-center gap-1.5 sm:gap-2">
                       <span className={`font-bold ${
-                        tx.type === 'deposit' ? 'text-emerald-500' : tx.type === 'settlement' ? 'text-blue-400' : 'text-rose-500'
+                        tx.type === 'deposit' ? 'text-emerald-600 dark:text-emerald-400' : tx.type === 'settlement' ? 'text-blue-500 dark:text-blue-400' : 'text-rose-600 dark:text-rose-400'
                       }`}>
                         {tx.type === 'deposit' ? '+' : tx.type === 'settlement' ? '✓' : '-'}{(tx.amount || 0).toLocaleString()}
                       </span>
-                      <span className="text-[9px] text-zinc-500">{tx.date || ''}</span>
+                      <span className={`text-[10px] ${theme === 'dark' ? 'text-zinc-500' : 'text-zinc-600'}`}>{tx.date || ''}</span>
                       
-                      {/* Inline Row Quick-Actions Controls */}
                       {tx.type !== 'settlement' && (
-                        <div className="flex items-center gap-1 ml-1 md:opacity-0 group-hover/row:opacity-100 transition-opacity">
+                        <div className="flex items-center gap-1.5 ml-1 block sm:opacity-0 sm:group-hover/row:opacity-100 transition-opacity">
                           <button 
                             onClick={() => startEditing(tx)} 
-                            className="text-zinc-400 hover:text-amber-500 transition-colors px-0.5 text-[10px]"
+                            className="text-zinc-400 hover:text-amber-500 transition-colors px-0.5 text-xs"
                             title="Edit entry"
                           >
                             ✏️
                           </button>
                           <button 
                             onClick={() => onDeleteTx(tracker.id, tx.id)} 
-                            className="text-zinc-400 hover:text-rose-500 transition-colors px-0.5 text-[10px]"
+                            className="text-zinc-400 hover:text-rose-500 transition-colors px-0.5 text-xs"
                             title="Delete entry"
                           >
                             ❌
