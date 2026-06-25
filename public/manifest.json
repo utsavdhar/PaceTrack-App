@@ -1,0 +1,17 @@
+{
+  "short_name": "PaceTrack",
+  "name": "PaceTrack: Financial Velocity Workspace",
+  "icons": [
+    {
+      "src": "https://i.imgur.com/WbX267I.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#09090b",
+  "theme_color": "#09090b",
+  "display": "standalone",
+  "orientation": "portrait"
+}
