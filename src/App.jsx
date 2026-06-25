@@ -40,7 +40,7 @@ function App() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowSplash(false);
-    }, 1600); // Fast, high-end professional splash window duration
+    }, 1600); 
     return () => clearTimeout(timer);
   }, []);
 
